@@ -13,6 +13,8 @@ export async function GET() {
     clients.delete(writer)
   }
 
+  stream.readable.pipeTo(new WritableStream()).catch(() => cleanup())
+
   return new NextResponse(stream.readable, {
     headers: {
       'Content-Type': 'text/event-stream',
