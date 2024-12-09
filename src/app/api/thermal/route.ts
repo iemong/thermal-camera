@@ -22,7 +22,7 @@ export async function GET() {
   })
 }
 
-export async function sendToAllClients(data: any) {
+async function sendToAllClients(data: any) {
   const encoder = new TextEncoder()
   const message = `data: ${JSON.stringify(data)}\n\n`
 
