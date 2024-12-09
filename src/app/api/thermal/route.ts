@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
 
 const clients = new Set<WritableStreamDefaultWriter>()
@@ -24,7 +26,7 @@ export async function GET() {
   })
 }
 
-async function sendToAllClients(data: any) {
+async function sendToAllClients(data: unknown) {
   const encoder = new TextEncoder()
   const message = `data: ${JSON.stringify(data)}\n\n`
 

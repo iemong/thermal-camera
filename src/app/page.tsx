@@ -1,7 +1,7 @@
 'use client'
 
 import ThermalCanvas from '@/components/ThermalCanvas'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 
 type ThermalData = number[]
 

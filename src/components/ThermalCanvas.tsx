@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 type ThermalCanvasProps = {
     data: number[]
@@ -13,24 +13,23 @@ export default function ThermalCanvas({ data }: ThermalCanvasProps) {
     }
 
     // 温度から色へ変換する関数
-    const getColor = (value: number) => {
+    const getColor = useCallback((value: number) => {
         const minTemp = 20
         const maxTemp = 40
 
         // 温度を-6から6の範囲にマッピング
         const x = ((value - minTemp) / (maxTemp - minTemp) * 12) - 6
-        const t = sigmoid(x)
 
         // 青から緑、緑から赤への変化を計算
-        let r = Math.floor(255 * sigmoid(x * 2 - 3))  // 後半で赤が増加
-        let g = Math.floor(255 * sigmoid(x * 2) * (1 - sigmoid(x * 2 - 3)))  // 中間で緑がピーク
-        let b = Math.floor(255 * (1 - sigmoid(x * 2)))  // 前半で青が減少
+        const r = Math.floor(255 * sigmoid(x * 2 - 3))  // 後半で赤が増加
+        const g = Math.floor(255 * sigmoid(x * 2) * (1 - sigmoid(x * 2 - 3)))  // 中間で緑がピーク
+        const b = Math.floor(255 * (1 - sigmoid(x * 2)))  // 前半で青が減少
 
         return `rgb(${r}, ${g}, ${b})`
-    }
+    }, [])
 
     // キャンバスに描画する関数
-    const drawThermalImage = () => {
+    const drawThermalImage = useCallback(() => {
         const canvas = canvasRef.current
         if (!canvas) return
 
@@ -51,11 +50,11 @@ export default function ThermalCanvas({ data }: ThermalCanvasProps) {
             ctx.fillStyle = getColor(temp)
             ctx.fillRect(x, y, pixelSize, pixelSize)
         })
-    }
+    }, [data, getColor])
 
     useEffect(() => {
         drawThermalImage()
-    }, [data])
+    }, [data, drawThermalImage])
 
     return (
         <canvas
