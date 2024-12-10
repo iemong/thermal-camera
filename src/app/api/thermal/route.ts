@@ -4,10 +4,6 @@ import { NextResponse } from 'next/server'
 
 const clients = new Set<WritableStreamDefaultWriter>()
 
-const cleanup = () => {
-  clients.clear()
-}
-
 export async function GET() {
   const stream = new TransformStream()
   const writer = stream.writable.getWriter()
@@ -32,7 +28,7 @@ async function sendToAllClients(data: unknown) {
       client.write(encoder.encode(message))
     } catch (e) {
       console.error('送信エラー:', e)
-      cleanup()
+      clients.delete(client)
     }
   })
 }
@@ -56,4 +52,4 @@ export async function POST(request: Request) {
       message: 'Internal Server Error'
     }, { status: 500 })
   }
-} 
+}
